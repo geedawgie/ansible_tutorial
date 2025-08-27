@@ -9,6 +9,7 @@
     apt:
       upgrade: dist
       update_cache: yes
+    changed_when: false
     when: ansible_distribution == "Ubuntu"
 
 - hosts: web_servers
@@ -46,3 +47,32 @@
       mode: 0755
       owner: root
       group: root
+
+  - name: Modify file and back it up
+    lineinfile: 
+      path: /home/synology/MYPROJECT/README.PROJECT1
+      line: 'this is a brand new line'
+      backup: yes
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: create cornelius user
+    tags: always
+    user:
+      name: cornelius
+      groups: root
+
+  - name: add ssh for cornelius
+    tags: always
+    authorized_key:
+      user: cornelius
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPL7XYZye0qx1EN10dM0+j+0ytvbrxywjl7YtOgkwWV1 ansible"
+  - name: add sudoers file for cornelius
+    copy:
+      src: sudoer_cornelius
+      dest: /etc/sudoers.d/cornelius
+      owner: root
+      group: root
+      mode: 0440

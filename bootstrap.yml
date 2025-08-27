@@ -1,0 +1,31 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: install updates (Ubuntu)
+    tags: always
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: add ssh for cornelius
+    tags: always
+    authorized_key:
+      user: cornelius
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPL7XYZye0qx1EN10dM0+j+0ytvbrxywjl7YtOgkwWV1 ansible"
+
+  - name: add sudoers file for cornelius
+    tags: always
+    copy:
+      src: sudoer_cornelius
+      dest: /etc/sudoers.d/cornelius
+      owner: root
+      group: root
+      mode: 0440
