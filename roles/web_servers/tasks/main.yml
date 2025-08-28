@@ -1,0 +1,8 @@
+- name: copy default_site.html to server 
+  tags: apache,apache2
+  copy:
+    src: default_site.html
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: 0644
